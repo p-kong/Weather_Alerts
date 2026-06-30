@@ -1,0 +1,25 @@
+name: Daily Weather Notification
+
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+jobs:
+  weather:
+    runs-on: ubuntu-latest
+
+    env:
+      OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
+      NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install requests
+
+      - run: python weather_notifier.py
