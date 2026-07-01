@@ -9,8 +9,8 @@ import os
 # -----------------------------
 API_KEY = os.environ["OPENWEATHER_API_KEY"]
 
-LATITUDE = 40.66
-LONGITUDE = -73.53
+LATITUDE = 40.672
+LONGITUDE = -73.535
 
 url = (
     "https://api.openweathermap.org/data/2.5/weather"
