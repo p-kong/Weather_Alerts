@@ -38,16 +38,16 @@ high = round(data["main"]["temp_max"])
 low = round(data["main"]["temp_min"])
 humidity = data["main"]["humidity"]
 
-offset = timedelta(seconds=data["timezone"])
+tz = timezone(timedelta(seconds=data["timezone"]))
 
 sunrise = datetime.fromtimestamp(
     data["sys"]["sunrise"],
-    tz=timezone(offset)
+    tz=tz
 ).strftime("%I:%M %p")
 
 sunset = datetime.fromtimestamp(
     data["sys"]["sunset"],
-    tz=timezone(offset)
+    tz=tz
 ).strftime("%I:%M %p")
 
 forecast = requests.get(forecast_url)
