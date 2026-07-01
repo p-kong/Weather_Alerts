@@ -3,6 +3,7 @@ import smtplib
 from email.message import EmailMessage
 from datetime import datetime
 import os
+from datetime import datetime, timezone, timedelta
 
 # -----------------------------
 # Weather Configuration
@@ -37,12 +38,16 @@ high = round(data["main"]["temp_max"])
 low = round(data["main"]["temp_min"])
 humidity = data["main"]["humidity"]
 
+offset = timedelta(seconds=data["timezone"])
+
 sunrise = datetime.fromtimestamp(
-    data["sys"]["sunrise"]
+    data["sys"]["sunrise"],
+    tz=timezone(offset)
 ).strftime("%I:%M %p")
 
 sunset = datetime.fromtimestamp(
-    data["sys"]["sunset"]
+    data["sys"]["sunset"],
+    tz=timezone(offset)
 ).strftime("%I:%M %p")
 
 forecast = requests.get(forecast_url)
