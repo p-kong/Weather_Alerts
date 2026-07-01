@@ -1,3 +1,5 @@
+from zoneinfo import ZoneInfo
+
 import requests
 import smtplib
 from email.message import EmailMessage
@@ -38,7 +40,8 @@ high = round(data["main"]["temp_max"])
 low = round(data["main"]["temp_min"])
 humidity = data["main"]["humidity"]
 
-tz = timezone(timedelta(seconds=data["timezone"]))
+
+tz = ZoneInfo("America/New_York")
 
 sunrise = datetime.fromtimestamp(
     data["sys"]["sunrise"],
