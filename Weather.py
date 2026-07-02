@@ -3,7 +3,6 @@ from zoneinfo import ZoneInfo
 import requests
 import smtplib
 from email.message import EmailMessage
-from datetime import datetime
 import os
 from datetime import datetime, timezone, timedelta
 
@@ -36,12 +35,12 @@ response.raise_for_status()
 
 data = response.json()
 
-high = round(data["main"]["temp_max"])
-low = round(data["main"]["temp_min"])
+
 humidity = data["main"]["humidity"]
 
 
 tz = ZoneInfo("America/New_York")
+today = datetime.now(tz).date()
 
 sunrise = datetime.fromtimestamp(
     data["sys"]["sunrise"],
@@ -57,6 +56,28 @@ forecast = requests.get(forecast_url)
 forecast.raise_for_status()
 
 forecast_data = forecast.json()
+forecast_list = forecast_data["list"]
+
+temps = [
+    item["main"]["temp"]
+    for item in forecast_list
+    if datetime.fromtimestamp(item["dt"], tz).date() == today
+]
+
+high = round(max(temps)) if temps else round(data["main"]["temp"])
+low = round(min(temps)) if temps else round(data["main"]["temp"])
+
+rain_chances = [
+    item.get("pop", 0)
+    for item in forecast_list
+    if datetime.fromtimestamp(item["dt"], tz).date() == today
+]
+
+chance_of_rain = round(max(rain_chances, default=0) * 100)
+
+
+feels_like = round(data["main"]["feels_like"])
+current_temp = round(data["main"]["temp"])
 
 # Next forecast period
 next_period = forecast_data["list"][0]
@@ -65,6 +86,8 @@ chance_of_rain = int(next_period.get("pop", 0) * 100)
 
 message = f"""Today's Weather
 
+Current Temp: {current_temp}°F
+Feels Like: {feels_like}°F
 High: {high}°F
 Low: {low}°F
 Chance of Rain: {chance_of_rain}%
